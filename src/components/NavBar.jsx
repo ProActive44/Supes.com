@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Box,
   Button,
@@ -22,9 +22,13 @@ import {
 import { Link } from "react-router-dom";
 import Login from "../Pages/Login";
 import SignUp from "../Pages/SignUp";
-const islogin = true;
+import { AuthContext } from "../Context/AuthContext";
+
 
 const NavBar = () => {
+
+    const {isLogin} = useContext(AuthContext)
+
   const {
     onOpen: onOpen1,
     onClose: onClose1,
@@ -35,6 +39,7 @@ const NavBar = () => {
     onClose: onClose2,
     isOpen: isOpen2,
   } = useDisclosure();
+ 
 
   const handleLoginClick = () => {
     onClose1();
@@ -122,10 +127,10 @@ const NavBar = () => {
       </Box>
       {/* LogIn */}
       <Modal
-        isOpen={isOpen1 ? true : islogin ? false : true}
+        isOpen={isOpen1 ? true : isLogin ? false : true}
         onClose={onClose1}
         closeOnOverlayClick={false}
-        size={"5xl"}
+        size={["xs","sm","xl","3xl","5xl"]}
         motionPreset="slideInRight"
         motion={{ motionDuration: 1000 }}
       >
@@ -142,7 +147,7 @@ const NavBar = () => {
         isOpen={isOpen2}
         onClose={onClose2}
         closeOnOverlayClick={false}
-        size={"5xl"}
+        size={["xs","sm","xl","3xl","5xl"]}
         motionPreset="slideInRight"
         motion={{ motionDuration: 1000 }}
       >

@@ -1,3 +1,7 @@
+import GoogleImage from '../Images/Google.png'
+import FaceBookImage from '../Images/Facebook.png'
+import AppleImage from '../Images/AppleLogo.png'
+import harleyQuinnImage from '../Images/harleyQuinn.png'
 import {
     Box,
     Button,
@@ -14,17 +18,62 @@ import {
     Text,
     Tooltip,
   } from "@chakra-ui/react";
-  import React from "react";
-  import { Link } from "react-router-dom";
+  import React, { useContext, useState } from "react";
+  import { Link, useNavigate } from "react-router-dom";
+import { AlertBox } from "../components/AlertBox";
+import { AuthContext } from "../Context/AuthContext";
+import axios from "axios";
+
+const signupOnServer = (state) => {
+  axios.post('https://supes-json-server.onrender.com/users', state)
+      .then(json => console.log(json))
+      .catch(err=>console.log(err))
+};
+
+
+  const initialState = {
+    name: "",
+    email: "",
+    number: "",
+    password: ""
+  }
   
   const SignUp = ({handleSignUpClick}) => {
 
+
+    const [state, setState] = useState(initialState)
+    const { loginFun, onOpenAlert } = useContext(AuthContext)
+    const navigate  = useNavigate()
+
+
+    const handleChange = (e)=>{
+      setState((prev)=>{ return {...prev, [e.target.name]: e.target.value}})
+   }
+
+    const handleAuthetication = ()=>{
+      if(state === initialState){
+         onOpenAlert()
+         return;
+      }
+      if(state.name === "" || state.email === "" || state.password === ""){
+        onOpenAlert()
+        return;
+      }
+      signupOnServer( state )
+      // console.log(state)
+      loginFun(state);
+      // setState(initialState)
+      navigate("/home")
+  }
+
+
     return (
-      <Box w='100%'   >
+      <>
+      <Box w={["xs","sm","xl","3xl","5xl"]} m={["0 10px","0 10px","auto","auto","auto"]}>
         
         <Flex >
           
-          <Box w="50%" my={'5'}>
+          <Box w={["90%","90%","90%","50%","50%"]} my={'5'}>
             <Box w={"80%"} h={"100%"} m="auto" >
               <FormControl mb={'0px'}>
                 <Heading color="red.400" fontSize="4xl" fontWeight="bold">
@@ -33,24 +82,24 @@ import {
                 <FormLabel mt={"5"} mb={"0px"}>
                   Name
                 </FormLabel>
-                <Input variant="flushed" placeholder="Enter Your Name" />
+                <Input variant="flushed" placeholder="Enter Your Name" value={state.name} name="name" onChange={handleChange} />
   
                 <FormLabel mt={"5"} mb={"0px"}>
                   Email
                 </FormLabel>
-                <Input variant="flushed" placeholder="Enter Your Email" />
+                <Input variant="flushed" placeholder="Enter Your Email" value={state.email} name="email" onChange={handleChange} />
 
                 <FormLabel mt={"5"} >
-                  Number
+                  Mobile Number
                 </FormLabel>
-                <Input variant="flushed" placeholder="Enter Your Number" type='number'/>
+                <Input variant="flushed" placeholder="Enter Your Mobile Number" type='number' value={state.number} name="number" onChange={handleChange} />
   
                 <FormLabel mt={"5"} mb={"0px"}>
                   Password
                 </FormLabel>
-                <Input variant="flushed" placeholder="Enter Your Password" />
+                <Input variant="flushed" placeholder="Enter Your Password" value={state.password} name="password" onChange={handleChange} />
   
-                <Button mt={"5"} bg="#FC8181" _hover={{ bg: "#F56565" }}>
+                <Button mt={"5"} bg="#FC8181" _hover={{ bg: "#F56565" }} onClick={handleAuthetication}>
                   SignUp
                 </Button>
                 </FormControl>
@@ -61,12 +110,12 @@ import {
 
                 <Text my={3}>or Direct Login with</Text>
 
-                <Flex w={"40%"} m="auto" mt={5} >
+                <Flex w={"40%"} mt={5} m={['5', 'auto', 'auto']} my={5} gap={[6, 5, 4, 4, 2]}>
                   <Link>
                     <Tooltip label="google" hasArrow>
                       <Box w="30px">
                         <Img
-                          src="https://cdn.iconscout.com/icon/free/png-256/free-google-160-189824.png?f=avif&w=128"
+                          src={GoogleImage}
                           alt="Google"
                         />
                       </Box>
@@ -77,8 +126,8 @@ import {
                     <Tooltip label="facebook" hasArrow>
                       <Box w="30px">
                         <Img
-                          src="https://cdn.iconscout.com/icon/free/png-256/free-facebook-logo-2019-1597680-1350125.png?f=avif&w=128"
-                          alt="Google"
+                          src={FaceBookImage}
+                          alt="FaceBook"
                         />
                       </Box>
                     </Tooltip>
@@ -88,8 +137,8 @@ import {
                     <Tooltip label="apple" hasArrow>
                       <Box w="30px">
                         <Img
-                          src="https://w7.pngwing.com/pngs/775/812/png-transparent-apple-logo-apple-logo-cupertino-company-apple-iphone-electronics-leaf-computer-thumbnail.png"
-                          alt="Google"
+                          src={AppleImage}
+                          alt="Apple"
                         />
                       </Box>
                     </Tooltip>
@@ -99,15 +148,17 @@ import {
             </Box>
           </Box>
   
-          <Box w={"50%"} bg="white" boxShadow="inset 0 0 1000px #F56565">
+          <Box w={"50%"} bg="white" boxShadow="inset 0 0 1000px #F56565" display={["none","none","none","block","block"]}>
             <Image
-              src="https://pngimg.com/d/harley_quinn_PNG29.png"
-              alt="Scarlet Witch"
+              src={harleyQuinnImage}
+              alt="harley quinn"
               w="90%"
             />
           </Box>
         </Flex>
       </Box>
+      <AlertBox />
+      </>
     );
   };
   
